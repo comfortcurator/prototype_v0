@@ -1,0 +1,17 @@
+{
+  "name": "project_v0",
+  "short_name": "project_v0",
+  "description": "Airbnb operations platform for Indian hosts.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#4e5dff",
+  "icons": [
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml"
+    }
+  ]
+}
+

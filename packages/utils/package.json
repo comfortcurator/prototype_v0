@@ -1,0 +1,13 @@
+{
+  "name": "@project_v0/utils",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "main": "src/index.ts",
+  "types": "src/index.ts",
+  "scripts": {
+    "lint": "eslint --config .eslintrc.cjs --ext .ts src",
+    "test": "vitest run"
+  }
+}
+

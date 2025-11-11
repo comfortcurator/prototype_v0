@@ -1,0 +1,22 @@
+{
+  "extends": "./tsconfig.base.json",
+  "files": [],
+  "references": [
+    {
+      "path": "./apps/web"
+    },
+    {
+      "path": "./packages/ui"
+    },
+    {
+      "path": "./packages/schemas"
+    },
+    {
+      "path": "./packages/config"
+    },
+    {
+      "path": "./packages/utils"
+    }
+  ]
+}
+

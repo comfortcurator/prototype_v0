@@ -1,0 +1,251 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+enum Role {
+  host
+  admin
+}
+
+enum PropertyStatus {
+  green
+  orange
+  red
+}
+
+enum PaymentStatus {
+  pending
+  paid
+  failed
+}
+
+enum PackageType {
+  standard
+  custom
+  maintenance
+}
+
+model User {
+  id           String   @id @default(uuid())
+  name         String?
+  email        String   @unique
+  phone        String   @unique
+  passwordHash String
+  role         Role
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  properties          Property[]
+  orders              Order[]
+  inventorySessions   InventorySession[]
+  notifications       Notification[]
+  passwordResetTokens PasswordResetToken[]
+  ownedPackages       Package[]
+}
+
+model Property {
+  id              String         @id @default(uuid())
+  userId          String
+  name            String
+  airbnbListingId String?
+  addressLine1    String
+  city            String
+  state           String
+  country         String         @default("India")
+  latitude        Float
+  longitude       Float
+  imageUrl        String?
+  description     String?
+  status          PropertyStatus @default(green)
+  createdAt       DateTime       @default(now())
+  updatedAt       DateTime       @updatedAt
+
+  user          User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  subscriptions Subscription[]
+  orders        Order[]
+  healthLogs    HealthLog[]
+
+  backupPackageId String?
+  backupPackage   Package? @relation("PropertyBackupPackage", fields: [backupPackageId], references: [id])
+}
+
+model Item {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  unitPrice   Decimal  @db.Decimal(10, 2)
+  moq         Int      @default(1)
+  imageUrl    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  packageItems          PackageItem[]
+  inventorySessionItems InventorySessionItem[]
+  orderItems            OrderItem[]
+}
+
+model Package {
+  id          String      @id @default(uuid())
+  name        String
+  type        PackageType @default(standard)
+  basePrice   Decimal     @db.Decimal(10, 2)
+  description String?
+  imageUrl    String?
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  ownerId     String?
+
+  owner      User?       @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+  items      PackageItem[]
+  orders     Order[]
+  backupFor  Property[]  @relation("PropertyBackupPackage")
+  orderItems OrderItem[]
+}
+
+model PackageItem {
+  packageId String
+  itemId    String
+  quantity  Int
+
+  package Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  item    Item    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([packageId, itemId])
+}
+
+model SubscriptionTier {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  price     Decimal  @db.Decimal(10, 2)
+  features  Json
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  subscriptions Subscription[]
+}
+
+model Subscription {
+  id         String   @id @default(uuid())
+  propertyId String
+  tierId     String
+  startDate  DateTime @default(now())
+  endDate    DateTime?
+  isActive   Boolean  @default(true)
+
+  property Property         @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  tier     SubscriptionTier @relation(fields: [tierId], references: [id], onDelete: Cascade)
+
+  @@unique([propertyId, isActive], map: "property_active_subscription")
+}
+
+model Order {
+  id                String        @id @default(uuid())
+  propertyId        String
+  packageId         String?
+  userId            String
+  totalAmount       Decimal       @db.Decimal(12, 2)
+  paymentStatus     PaymentStatus @default(pending)
+  razorpayOrderId   String        @unique
+  razorpayPaymentId String?
+  createdAt         DateTime      @default(now())
+  updatedAt         DateTime      @updatedAt
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+  package  Package? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items    OrderItem[]
+}
+
+model InventorySession {
+  id          String   @id @default(uuid())
+  adminId     String
+  description String?
+  receiptUrl  String?
+  createdAt   DateTime @default(now())
+
+  admin User                  @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  items InventorySessionItem[]
+}
+
+model InventorySessionItem {
+  sessionId   String
+  itemId      String
+  quantity    Int
+  costPerUnit Decimal @db.Decimal(10, 2)
+
+  session InventorySession @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  item    Item             @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@id([sessionId, itemId])
+}
+
+model HealthLog {
+  id         String         @id @default(uuid())
+  propertyId String
+  status     PropertyStatus
+  reason     String?
+  metadata   Json?
+  createdAt  DateTime @default(now())
+
+  property Property @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+
+  @@index([propertyId, createdAt])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(uuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Image {
+  id        String   @id @default(uuid())
+  url       String
+  altText   String?
+  kind      String
+  entityId  String
+  createdAt DateTime @default(now())
+
+  @@index([entityId, kind])
+}
+
+model Notification {
+  id            String   @id @default(uuid())
+  userId        String
+  channel       String
+  content       Json
+  status        String   @default("queued")
+  createdAt     DateTime @default(now())
+  dispatchedAt  DateTime?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+}
+
+model OrderItem {
+  id        String   @id @default(uuid())
+  orderId   String
+  itemId    String?
+  packageId String?
+  quantity  Int
+  unitPrice Decimal @db.Decimal(10, 2)
+  name      String
+
+  order   Order   @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  item    Item?   @relation(fields: [itemId], references: [id], onDelete: SetNull)
+  package Package? @relation(fields: [packageId], references: [id], onDelete: SetNull)
+
+  @@index([orderId])
+}
+

@@ -1,0 +1,21 @@
+{
+  "name": "project_v0",
+  "private": true,
+  "version": "0.1.0",
+  "packageManager": "pnpm@9.12.2",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "lint": "pnpm --filter web lint",
+    "test": "pnpm --filter web test",
+    "format": "pnpm -r exec prettier --write .",
+    "db:generate": "pnpm --filter web prisma generate",
+    "db:migrate": "pnpm --filter web prisma migrate dev",
+    "db:deploy": "pnpm --filter web prisma migrate deploy",
+    "db:seed": "pnpm --filter web prisma db seed"
+  },
+  "devDependencies": {
+    "turbo": "^2.1.3"
+  }
+}
+
