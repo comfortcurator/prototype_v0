@@ -1,12 +1,13 @@
 import { PrismaClient } from "@prisma/client";
+import { env } from "@/env";
+import { createMockPrismaClient } from "./mock-prisma";
 
 declare global {
   // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined;
 }
 
-export const prisma =
-  global.prisma ||
+const createRealClient = () =>
   new PrismaClient({
     log:
       process.env.NODE_ENV === "development"
@@ -14,7 +15,13 @@ export const prisma =
         : ["error"]
   });
 
-if (process.env.NODE_ENV !== "production") {
-  global.prisma = prisma;
+const client = env.isDatabaseConfigured
+  ? global.prisma || createRealClient()
+  : (createMockPrismaClient() as unknown as PrismaClient);
+
+export const prisma = client;
+
+if (env.isDatabaseConfigured && process.env.NODE_ENV !== "production") {
+  global.prisma = client;
 }
 
