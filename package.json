@@ -15,8 +15,10 @@
     "db:deploy": "pnpm --filter web prisma migrate deploy",
     "db:seed": "pnpm --filter web prisma db seed"
   },
+  "dependencies": {
+    "next": "15.0.3"
+  },
   "devDependencies": {
-    "next": "15.0.3",
     "turbo": "^2.1.3"
   }
 }
