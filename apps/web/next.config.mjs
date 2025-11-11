@@ -1,5 +1,3 @@
-import type { NextConfig } from "next";
-
 const securityHeaders = [
   { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -30,7 +28,7 @@ const securityHeaders = [
   }
 ];
 
-const config: NextConfig = {
+const config = {
   reactStrictMode: true,
   compress: true,
   poweredByHeader: false,

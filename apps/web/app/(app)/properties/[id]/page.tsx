@@ -10,11 +10,11 @@ import { ChannelRefresh } from "@/components/realtime/channel-refresh";
 import { auth, prisma } from "@/lib/server";
 
 interface PropertyPageProps {
-  params: Promise<{ id: string }>;
+  params: { id: string };
 }
 
 export default async function PropertyPage({ params }: PropertyPageProps) {
-  const { id } = await params;
+  const { id } = params;
   const session = await auth();
   if (!session?.user) {
     return notFound();
