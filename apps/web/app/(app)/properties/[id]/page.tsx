@@ -1,6 +1,5 @@
 export const dynamic = "force-dynamic";
 
-import { auth, prisma } from "@/lib/server";
 import { PropertyMap } from "@/components/maps/property-map";
 import { Button } from "@project_v0/ui";
 import { formatINRCurrency } from "@project_v0/utils";
@@ -8,13 +7,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ChannelRefresh } from "@/components/realtime/channel-refresh";
+import { auth, prisma } from "@/lib/server";
 
 interface PropertyPageProps {
-  params: { id: string };
+  params: Promise<{ id: string }>;
 }
 
 export default async function PropertyPage({ params }: PropertyPageProps) {
-  const { id } = params;
+  const { id } = await params;
   const session = await auth();
   if (!session?.user) {
     return notFound();

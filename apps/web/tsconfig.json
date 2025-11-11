@@ -3,12 +3,29 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["./*"],
-      "@ui/*": ["../../packages/ui/src/*"],
-      "@schemas/*": ["../../packages/schemas/src/*"],
-      "@config/*": ["../../packages/config/src/*"]
+      "@/*": [
+        "./*"
+      ],
+      "@ui/*": [
+        "../../packages/ui/src/*"
+      ],
+      "@schemas/*": [
+        "../../packages/schemas/src/*"
+      ],
+      "@config/*": [
+        "../../packages/config/src/*"
+      ]
     },
-    "typeRoots": ["./types", "../../node_modules/@types"]
+    "typeRoots": [
+      "./types",
+      "../../node_modules/@types"
+    ],
+    "incremental": true,
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ]
   },
   "include": [
     "next-env.d.ts",
@@ -17,6 +34,7 @@
     "**/*.d.ts",
     ".next/types/**/*.ts"
   ],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }
-

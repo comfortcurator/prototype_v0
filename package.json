@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "pnpm --filter web dev",
     "build": "pnpm --filter web build",
+    "vercel-build": "pnpm --filter web build",
     "lint": "pnpm --filter web lint",
     "test": "pnpm --filter web test",
     "format": "pnpm -r exec prettier --write .",
@@ -15,6 +16,7 @@
     "db:seed": "pnpm --filter web prisma db seed"
   },
   "devDependencies": {
+    "next": "15.0.3",
     "turbo": "^2.1.3"
   }
 }

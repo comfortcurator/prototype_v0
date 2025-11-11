@@ -1,11 +1,12 @@
 import { ResetPasswordForm } from "@/components/auth/reset-password-form";
 
 interface ResetPasswordPageProps {
-  searchParams: Record<string, string | string[] | undefined>;
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default function ResetPasswordPage({ searchParams }: ResetPasswordPageProps) {
-  const tokenParam = searchParams.token;
+export default async function ResetPasswordPage({ searchParams }: ResetPasswordPageProps) {
+  const resolvedParams = await searchParams;
+  const tokenParam = resolvedParams.token;
   const token = Array.isArray(tokenParam) ? tokenParam[0] : tokenParam;
   return (
     <div className="space-y-8">
