@@ -1,3 +1,36 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+pnpm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Node modules
+node_modules
+.pnpm-store
+
+# Build outputs
+.next
+.turbo
+dist
+build
+coverage
+out
+
+# Env files
+.env
+.env.*
+
+# Editor
+.DS_Store
+.vscode
+.idea
+
+# Misc
+*.pem
+*.local
+*.swp
 # Build artifacts
 .next
 .turbo

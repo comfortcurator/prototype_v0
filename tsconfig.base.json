@@ -1,5 +1,30 @@
 {
   "compilerOptions": {
+    "target": "ES2021",
+    "lib": ["DOM", "DOM.Iterable", "ES2021"],
+    "types": ["node"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "resolveJsonModule": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "allowJs": false,
+    "forceConsistentCasingInFileNames": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["apps/web/*"],
+      "@ui/*": ["packages/ui/src/*"],
+      "@schemas/*": ["packages/schemas/src/*"],
+      "@utils/*": ["packages/utils/src/*"]
+    }
+  }
+}
+{
+  "compilerOptions": {
     "target": "ES2022",
     "lib": ["DOM", "DOM.Iterable", "ES2022"],
     "allowJs": false,
